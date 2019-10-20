@@ -2,45 +2,51 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-
-import {Toolbar} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core";
 import PublicComponent from "./Components/Public/PublicComponent";
-import handleOpen, {AccessControl} from "./Components/Access/AccessControl";
+import AccessControl from "./Components/Access/AccessControl";
 
-class GeneralPage extends React.Component{
-
-  constructor(props){
-    super(props);
-    this.accessControlComponent = React.createRef();
-  }
-
-  handleClickOpenAccessControl = () => {
-    this.accessControlComponent.current.open();
-  };
-
-  render(){
-    return (
-        <div className="App">
-          <AppBar position="static" color="default">
-            <Toolbar>
-              <Button href="#" color="primary" variant="outlined"  onClick={this.handleClickOpenAccessControl}>
-                Sing in
-              </Button>
-            </Toolbar>
-          </AppBar>
-          <PublicComponent/>
-          <AccessControl  ref = {this.accessControlComponent}/>
-        </div>
-    );
-  }
-}
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1,
+  },
+  title: {
+    flexGrow: 1,
+  },
+}));
 
 
 function App() {
-    return (<GeneralPage/>);
+
+  const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose =() => {
+    setOpen(false);
+  };
+
+  return (
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" className={classes.title}>
+            DevOx
+          </Typography>
+          <Button color="inherit" onClick={handleClickOpen}>Login</Button>
+        </Toolbar>
+      </AppBar>
+      <AccessControl open={open} onClose={handleClose}/>
+      <PublicComponent />
+    </div>
+  );
 }
-
-
 
 export default App;
