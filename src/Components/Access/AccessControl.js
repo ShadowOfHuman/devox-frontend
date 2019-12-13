@@ -73,9 +73,8 @@ const styleButton = makeStyles(theme => ({
 
 export default class AccessControl extends React.Component {
 
-  context=null;
-  constructor(props, context) {
-    super(props, context);
+  constructor(props) {
+    super(props);
     this.state = {
       email: "",
       password: "",
@@ -83,9 +82,9 @@ export default class AccessControl extends React.Component {
       loading: false,
       error: false,
       success: false,
-      singInForm: true
+      singInForm: true,
+      context: props.context
     };
-    this.context = this.props.context;
   }
   static contextType = AuthContext;
 
@@ -120,13 +119,13 @@ export default class AccessControl extends React.Component {
         success: true,
         messsage: ""
       });
-      this.context.setUserId(response.data["idUser"]);
-      this.context.setUsername(response.data["userName"]);
-      this.context.setAuth(true);
-      this.context.handleClose();
+      this.state.context.setUserId(response.data["idUser"]);
+      this.state.context.setUsername(response.data["userName"]);
+      this.state.context.setAuth(true);
+      this.state.context.handleClose();
     })
       .catch((error)=>{
-        if (error.response.status === 400) {
+        if (error.status === 400) {
           this.setState({
             error: true,
             message: "Invalid email or password"
@@ -145,7 +144,6 @@ export default class AccessControl extends React.Component {
           loading: false
         });
       });
-    console.log(this.state.email + " " + this.state.password)
   }
   handleSingUp() {
     this.setState({loading: true});
@@ -155,6 +153,8 @@ export default class AccessControl extends React.Component {
         //Close modal window
       })
       .catch((error) => {
+        alert(error.message);
+        return;
         if (error.response.status === 400) {
           this.setState({
             error: true,
@@ -288,7 +288,6 @@ export default class AccessControl extends React.Component {
         )}</AuthContext.Consumer>);
   }
 }
-AccessControl.context = AuthContext;
 
 
 
