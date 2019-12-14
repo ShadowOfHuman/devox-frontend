@@ -60,7 +60,7 @@ export class LobbyComponent extends React.Component {
     this.state.hubConnection = new SignalR.HubConnectionBuilder()
       .withUrl("/game")
       .build();
-    this.state.hubConnection.baseUrl = "http://localhost:5000/game";
+    this.state.hubConnection.baseUrl = "http://localhost/game";
     this.state.hubConnection
       .start()
       .then(() => {
@@ -80,17 +80,17 @@ export class LobbyComponent extends React.Component {
       };
       let games = this.state.games;
       //games.push(game);
+      this.setState({gameId: game.data["IdUser"]});
       games.push(myObj);
       this.setState({ games: games });
     });
   }
 
-  onConnectClickHandler = player => {
-    /*this.state.hubConnection.invoke("ConnectToGame", {
-            "IdGame": this.state.gameId,
-            "IdUser": this.state.userId
+  onConnectClickHandler = (gameId,player) => {
+    this.state.hubConnection.invoke("ConnectToGame", {
+            "IdGame": gameId,
+            "IdUser": this.state.userId-0
         }).catch(err => console.error(err));
-         */
     let state = [
       this.state.size,
       this.state.userId,
@@ -98,6 +98,7 @@ export class LobbyComponent extends React.Component {
       this.state.hubConnection,
       player
     ];
+    console.info(state);
     this.props.switchToGame(state);
   };
 
@@ -123,7 +124,23 @@ export class LobbyComponent extends React.Component {
     let games = this.state.games;
     games.push(myObj);
     this.setState({ games: games });
-    //this.state.hubConnection.invoke('GetAll').then(r => this.state.games = r);
+    this.state.hubConnection.invoke('GetAll').then(r => {
+      console.info(r);
+      let games = this.state.games;
+      r.forEach((item) => {
+        console.info(item);
+        let myObj = {
+          name: "ЪЕЪ",
+          host: "ShadowOfHuman",
+          size: "3x3",
+          password: "Ага",
+          userId: this.state.userId,
+          gameId: item.id
+        };
+        console.info(myObj);
+        games.push(myObj);
+      });
+      this.setState({games: games})});
   };
 
   setPassword(password) {
@@ -145,20 +162,28 @@ export class LobbyComponent extends React.Component {
   onClickHandler = () => {
     const model = {
       IdCreatedUser: this.state.userId,
-      ServerName: this.state.name,
-      GameSize: this.state.size,
-      ServerPassword: this.state.password
+      Title: this.state.name,
+      Size: this.state.size
     };
     const curModel = {
       IdCreatedUser: this.state.userId
     };
     this.state.hubConnection
-      .invoke("CreateGame", curModel)
-      .then(response => this.setGameId(response.data["IdGame"]))
+      .invoke("CreateGame", model).then(response =>{
+        console.info(response);
+      this.setState({gameId: response});
+      let state = [
+        this.state.size,
+        this.state.userId,
+        this.state.gameId,
+        this.state.hubConnection,
+        1
+      ];
+      this.props.switchToGame(state);
+      console.info(this.state.gameId);
+      console.info(this.state.userId);
+    })
       .catch(err => console.error(err));
-    this.onConnectClickHandler(this.state.userId, this.state.gameId, 1);
-    console.info(this.state.gameId);
-    console.info(this.state.userId);
   };
 
   render() {
