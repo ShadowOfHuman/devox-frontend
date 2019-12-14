@@ -19,9 +19,9 @@ const styles = {
     height: 100,
     backgroundColor: "transparent",
     fontSize: 90,
-    border: "2px solid #707070",
     textAlign: "center",
     verticalAlign: "middle",
+    border: "2px solid #707070",
     lineHeight: "90px"
   }
 };
@@ -46,8 +46,8 @@ class Square extends React.Component {
 
   makeMove = () => {
     let model = {
-      IdUser: this.props.state[1],
-      IdGame: this.props.state[2],
+      IdUser: this.props.state[1]-0,
+      IdGame: this.props.state[2].idGame,
       X: this.state.x,
       Y: this.state.y
     };
@@ -85,7 +85,7 @@ class Board extends React.Component {
     for (let i = 0; i < this.props.state[0]; i++) {
       let row = [];
       for (let j = 0; j < this.props.state[0]; j++) {
-        row.push(<Square state={this.props.state} X={j} Y={i} />);
+        row.push(<Square state={this.props.state} X={j} Y={i}/>);
       }
       game.push(<div style={styles.row}>{row}</div>);
     }

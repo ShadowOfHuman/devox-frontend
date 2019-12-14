@@ -43,7 +43,7 @@ export class GamesPreview extends React.Component {
               align="right"
               variant="contained"
               color="primary"
-              onClick={() => this.props.clickHandler(0)}
+              onClick={() => this.props.clickHandler(this.props.games[i].gameId,0)}
             >
               Connect
             </Button>
