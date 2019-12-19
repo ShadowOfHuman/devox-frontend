@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "./App.css";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -10,7 +10,10 @@ import { LobbyComponent } from "./Components/Lobby/LobbyComponent";
 import Dialog from "@material-ui/core/Dialog";
 import AccessControl from "../src/Components/Access/AccessControl";
 import AuthContext from "./Components/DataContext";
-import { Game } from "./Components/Game/Game";
+import { GameField } from "./Components/Game/GameField";
+import {AccessService} from "./Components/Access/AccessService";
+import {CookieService} from "./Components/CookieService";
+import {GamesPageComponent} from "./Components/Game/GamesPageComponent";
 
 require("dotenv").config();
 
@@ -23,6 +26,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+/**
+ * @return {boolean}
+ */
+
+
 function App() {
   const classes = useStyles();
   const [game, setGame] = React.useState(false);
@@ -31,6 +39,20 @@ function App() {
   const [userId, setUserId] = React.useState("");
   const [username, setUsername] = React.useState("");
   const [state, setState] = React.useState([]);
+
+  useEffect(() => {
+    validToken()
+  }, []);
+
+  const validToken=()=>{
+    AccessService.checkToken(CookieService.getAuthToken())
+      .then(response => {
+        setAuth(true);
+      })
+      .catch( error =>{
+        setAuth(false);
+      });
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -47,6 +69,7 @@ function App() {
   const handleClickLogOut = () => {
     setUserId(null);
     setAuth(false);
+    CookieService.removeAllcookie();
   };
 
   return (
@@ -78,10 +101,10 @@ function App() {
           />
         </Dialog>
         {auth && !game && (
-          <LobbyComponent userId={userId} switchToGame={switchToGame} />
+          <GamesPageComponent userId={userId} switchToGame={switchToGame} />
         )}
         {!auth && !game && <PublicComponent />}
-        {auth && game && <Game state={state} />}
+        {auth && game && <GameField state={state} />}
       </div>
     </AuthContext.Provider>
   );

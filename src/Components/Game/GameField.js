@@ -1,4 +1,6 @@
 import React from "react";
+import {User} from "../../Models/User";
+import {CircularProgress} from "@material-ui/core";
 
 const styles = {
   game: {
@@ -75,6 +77,19 @@ class Square extends React.Component {
 }
 
 class Board extends React.Component {
+
+
+  constructor(props, context) {
+    super(props, context);
+    this.state={
+      waitingUser: true,
+      waitingUserMove: true,
+      nextUserMove: User,
+      game: this.props.game
+
+    }
+  }
+
   renderSquare(i) {
     return <Square />;
   }
@@ -93,16 +108,26 @@ class Board extends React.Component {
   }
 }
 
-export class Game extends React.Component {
+export class GameField extends React.Component {
+
+  constructor(props, context) {
+    super(props, context);
+    this.state={
+      game: this.props.game
+    };
+    console.info(this.state.game);
+  }
+
   render() {
     return (
       <div className="game">
-        <div style={styles.game}>
-          <Board state={this.props.state} />
-        </div>
+        {!this.state.waitingUser && <div>`Connected with{this.state.game.secondUser.username}`</div>}
         <div className="game-info">
-          <div>{/* status */}</div>
-          <ol>{/* TODO */}</ol>
+          Waiting second user: { this.state.waitingUser && <CircularProgress/>}
+            <ol>{/* TODO */}</ol>
+        </div>
+        <div style={styles.game}>
+          <Board game={this.state.game} />
         </div>
       </div>
     );

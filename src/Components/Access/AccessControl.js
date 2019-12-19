@@ -9,6 +9,8 @@ import {AccessService} from "./AccessService";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {green} from "@material-ui/core/colors";
 import AuthContext, {AuthConsumer} from "../DataContext";
+import Cookies from 'js-cookie'
+import {CookieService} from "../CookieService";
 
 const styleAccessControl = makeStyles(theme => ({
   '@global': {
@@ -73,8 +75,12 @@ const styleButton = makeStyles(theme => ({
 
 export default class AccessControl extends React.Component {
 
+
+
   constructor(props) {
     super(props);
+
+
     this.state = {
       email: "",
       password: "",
@@ -83,8 +89,10 @@ export default class AccessControl extends React.Component {
       error: false,
       success: false,
       singInForm: true,
-      context: props.context
+      context: props.context,
+
     };
+
   }
   static contextType = AuthContext;
 
@@ -113,7 +121,6 @@ export default class AccessControl extends React.Component {
       this.state.email,
       this.state.password
     ).then((response) => {
-      //todo: make save in local storage
       this.setState({
         error: false,
         success: true,
@@ -122,6 +129,8 @@ export default class AccessControl extends React.Component {
       this.state.context.setUserId(response.data["idUser"]);
       this.state.context.setUsername(response.data["userName"]);
       this.state.context.setAuth(true);
+      CookieService.setAuthToken(response.data["token"]);
+      CookieService.setUserId(response.data["idUser"], response.data["userName"]);
       this.state.context.handleClose();
     })
       .catch((error)=>{
@@ -174,8 +183,6 @@ export default class AccessControl extends React.Component {
 
     console.log(this.state.username + " " + this.state.email + " " + this.state.password)
   }
-
-
   handleChangeForm() {
     this.setState({singInForm: !this.state.singInForm});
   }

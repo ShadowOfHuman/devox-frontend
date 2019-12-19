@@ -4,6 +4,7 @@ const AuthContext = React.createContext({
   setAuth: () => {},
   handleClose: () => {},
   setUserId: () => {},
-  setUsername: ()=>{}
+  setUsername: ()=>{},
+
 });
 export default AuthContext
