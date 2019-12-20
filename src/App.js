@@ -48,6 +48,8 @@ function App() {
     AccessService.checkToken(CookieService.getAuthToken())
       .then(response => {
         setAuth(true);
+        setUserId(CookieService.getUserId());
+        setUsername(CookieService.getUsername());
       })
       .catch( error =>{
         setAuth(false);

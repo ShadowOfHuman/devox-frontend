@@ -128,9 +128,9 @@ export default class AccessControl extends React.Component {
       });
       this.state.context.setUserId(response.data["idUser"]);
       this.state.context.setUsername(response.data["userName"]);
-      this.state.context.setAuth(true);
       CookieService.setAuthToken(response.data["token"]);
       CookieService.setUserId(response.data["idUser"], response.data["userName"]);
+      this.state.context.setAuth(true);
       this.state.context.handleClose();
     })
       .catch((error)=>{

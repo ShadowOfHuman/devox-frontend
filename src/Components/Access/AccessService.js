@@ -6,6 +6,7 @@ import {CookieService} from "../CookieService";
 dotenv.config();
 export class AccessService {
   static registration(username, email, password) {
+    console.info(process.env.REACT_APP_API_URL);
     return Axios.post(process.env.REACT_APP_API_URL + "/User/registration", {
       userName: username,
       email: email,

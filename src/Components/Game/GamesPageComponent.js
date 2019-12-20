@@ -18,6 +18,7 @@ import {GameField} from "./GameField";
 import {Game} from "../../Models/Game";
 import Dialog from "@material-ui/core/Dialog";
 import {User} from "../../Models/User";
+import * as SignalR from "@microsoft/signalr";
 
 const styles = {
   formControl: {
@@ -56,7 +57,10 @@ export class GamesPageComponent extends React.Component {
       games: [],
       openGameDialog: false,
       context: props.context,
+      hubConnection: null
     };
+    this.state.hubConnection = new SignalR.HubConnectionBuilder().withUrl("http://localhost/game").build();
+    this.state.hubConnection.start().then(()=>console.info('Connection Started')).catch(error=>console.error(error));
   }
 
   loadGames = () => {
@@ -116,6 +120,28 @@ export class GamesPageComponent extends React.Component {
 
   };
 
+  handleOpenConnectGameDialog = (gameId) =>{
+    let connectModel = {
+      idGame: gameId,
+      idUser: CookieService.getUserId()
+    };
+    this.state.hubConnection.invoke("ConnectToGame", connectModel).then(response => {
+      let newGame = new Game();
+      let user = new User();
+      user.id = CookieService.getUserId();
+      user.username = CookieService.getUsername();
+      newGame.id = gameId;
+      newGame.firstUser = user;
+      newGame.size = this.state.size;
+      newGame.title = this.state.name;
+
+      this.setState({
+        openGameDialog: true,
+        game: newGame
+      });
+    });
+  };
+
   handleOpenGameDialog = () => {
     if (this.state.name===""){
       return;
@@ -130,6 +156,8 @@ export class GamesPageComponent extends React.Component {
         newGame.firstUser = user;
         newGame.size = this.state.size;
         newGame.title = this.state.name;
+
+
         this.setState({
           openGameDialog: true,
           game: newGame
@@ -188,8 +216,8 @@ export class GamesPageComponent extends React.Component {
               <TableRow>
                 <TableCell>ID</TableCell>
                 <TableCell>Title</TableCell>
-                <TableCell align="right">Size</TableCell>
-                <TableCell align="right">Actions</TableCell>
+                <TableCell>Size</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -199,7 +227,7 @@ export class GamesPageComponent extends React.Component {
                   <TableCell >{row.title}</TableCell>
                   <TableCell >{row.size}</TableCell>
                   <TableCell >
-                    <button onClick={this.handleCloseConnectDialog}>Connect</button>
+                    <button onClick={()=>this.handleOpenConnectGameDialog(row.id)}>Connect</button>
                   </TableCell>
                 </TableRow>
               ))
@@ -209,7 +237,7 @@ export class GamesPageComponent extends React.Component {
         </div>
 
         <Dialog open={this.state.openGameDialog} onClose={this.handleCloseGameDialog} >
-          <GameField game = {this.state.game}/>
+          <GameField game = {this.state.game} hubConnection = {this.state.hubConnection}/>
           {/*<GamesPreview*/}
           {/*  games={this.state.games}*/}
           {/*  clickHandler={this.onConnectClickHandler}*/}

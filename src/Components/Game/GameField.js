@@ -1,6 +1,7 @@
 import React from "react";
 import {User} from "../../Models/User";
 import {CircularProgress} from "@material-ui/core";
+import * as SignalR from "@microsoft/signalr";
 
 const styles = {
   game: {
@@ -33,11 +34,12 @@ class Square extends React.Component {
     this.state = {
       x: this.props.X,
       y: this.props.Y,
-      value: null
+      value: null,
+      hubConnection: this.props.hubConnection
     };
-    this.props.state[3].on("NextMove", (x, y) => {
+    this.state.hubConnection.on("NextMove", (x, y) => {
       if (this.state.x === x && this.state.y === y) {
-        if (this.props.state[4] === 1) {
+        if (this.props.state.firstUser.id !== 1) {
           this.setState({ value: "X" });
         } else {
           this.setState({ value: "O" });
@@ -48,13 +50,13 @@ class Square extends React.Component {
 
   makeMove = () => {
     let model = {
-      IdUser: this.props.state[1]-0,
-      IdGame: this.props.state[2].idGame,
+      IdUser: this.props.state.firstUser.id-0,
+      IdGame: this.props.state.id,
       X: this.state.x,
       Y: this.state.y
     };
     console.info(model);
-    this.props.state[3].invoke("MakeAMove", model);
+    this.props.hubConnection.invoke("MakeAMove", model);
   };
 
   render() {
@@ -63,7 +65,7 @@ class Square extends React.Component {
         style={styles.square}
         onClick={() => {
           this.makeMove();
-          if (this.props.state[4] === 1) {
+          if (this.props.state.firstUser.id === 1) {
             this.setState({ value: "X" });
           } else {
             this.setState({ value: "O" });
@@ -97,10 +99,10 @@ class Board extends React.Component {
   render() {
     const status = "Next player: X";
     let game = [];
-    for (let i = 0; i < this.props.state[0]; i++) {
+    for (let i = 0; i < this.props.game.size; i++) {
       let row = [];
-      for (let j = 0; j < this.props.state[0]; j++) {
-        row.push(<Square state={this.props.state} X={j} Y={i}/>);
+      for (let j = 0; j < this.props.game.size; j++) {
+        row.push(<Square state={this.props.game} X={j} Y={i} hubConnection={this.props.hubConnection}/>);
       }
       game.push(<div style={styles.row}>{row}</div>);
     }
@@ -121,13 +123,13 @@ export class GameField extends React.Component {
   render() {
     return (
       <div className="game">
-        {!this.state.waitingUser && <div>`Connected with{this.state.game.secondUser.username}`</div>}
+        {!this.state.waitingUser && <div>`Connected with{"lol"}`</div>}
         <div className="game-info">
           Waiting second user: { this.state.waitingUser && <CircularProgress/>}
             <ol>{/* TODO */}</ol>
         </div>
         <div style={styles.game}>
-          <Board game={this.state.game} />
+          <Board game={this.state.game} hubConnection={this.props.hubConnection} />
         </div>
       </div>
     );
