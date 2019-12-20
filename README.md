@@ -1,68 +1,45 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Web app "Cross-Zero"
 
-## Available Scripts
+## About
 
-In the project directory, you can run:
+Cross-Zero is a web application Tic-Tac-Toe game. We create this for semester work on the subject "Software project management".
 
-### `npm start`
+This repository provides only frontend. Backend available in [devox-backend](https://github.com/ShadowOfHuman/devox-backend).
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Requirements
+1. Game with bot:
+	1. Bot checks its move for the possibility of winning;
+	2. Bot checks its move to prevent the player from winning.
+2. Game with real people in Internet
+ 	1. In-game currency.
+  2. Customization
+3. Registration
+  1. User can start the game only by logging in.
+	2. Account is tied to e-mail.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+## Specification
+Used technologies:
+* [ReactJS](https://reactjs.org/docs/getting-started.html)
+* [Material-UI](https://material-ui.com/)
+* [npm](https://docs.npmjs.com/)
 
-### `npm test`
+## Design
+Demo available in [Adobe XD Cloud](https://xd.adobe.com/view/f18c4ef2-35c7-40ce-7c4b-9cc671a8c1c1-87bd/)
+<br>Login</br>
+![Login](https://psv4.userapi.com/c856336/u106299663/docs/d1/231cd8ca6995/2019-12-21_04-02.png?extra=q5438El2ZEONYXge-L3mKktIBY2eh9SEKgRC2RtIJ8Hn2Mci5l4La6qSFPN9jyXY58CZxx5DkWF3GnpPXZvjQICPMgzguFDtp22Bd4GmoIOH8prjkEEJkpuIXQI1VzdvxYvwxoLPYDexIIi2Mscwucr-pQ)
+<br>Singleplayer game</br>
+![Singleplayer game](https://psv4.userapi.com/c856336/u106299663/docs/d10/ea973c5719d6/Singleplayer_Game_2x.png?extra=KQTkMN_loNMkfrb_NmanRRo7E8VxgVqm_9JTvUfb-xVp5mpPGrxPEAyyr4HGgg-XwHQ7zRsHjGsBTzLHFXHUk5Ayj3LwbN4BeKzEVKTnaYfgPZRe0IMWJPrj1AOIsEZa4kbs_fbdPd3SEG7e1p6E0psCDw)
+<br>Multiplayer game list</br>
+![Multiplayer game list](https://psv4.userapi.com/c856336/u106299663/docs/d13/eccd84aa7278/Multiplayer_2x.png?extra=RbU1vrDnPP8p57ejQy0OUOACM2VBEAuQSkkzgcfFMTtBtADDI1JaBVXRC4hHtvo7W4ndWw9vD3XU81UGiKOL6LQbLNP1nVbTqCNcrrVoVXyHLjPJ4GcL0peJ2gs3KJeSINOG5ImAiyKAekaUyLrfYLfolA)
+<br>User page</br>
+![user](https://psv4.userapi.com/c856336/u106299663/docs/d3/d4e7945005b0/Settings_2x.png?extra=vnsetoElmX3M9H07NnZdqfWD0ub4rEs5K4Bn_HUvhJ_Prg9NnBTJpCXTrYRJOjfBTcemVG19RT4aO38BYEIOJaacLVKFMoKGqgZ4N9qyHLXkpGaMfR025QAv-b3Jnq43HC9mqEx5ZdDOsVnXzELCwGQfow)
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Contributors
+Analyst - Ivan Leontyev  
+FrontEnd - Turchin Max  
+Tester - Lemmer Vadim  
+Lecturer - Stepanov Peter
 
-### `npm run build`
+## License
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+The Cross-Zero game is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
