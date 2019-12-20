@@ -59,7 +59,7 @@ export class GamesPageComponent extends React.Component {
       context: props.context,
       hubConnection: null
     };
-    this.state.hubConnection = new SignalR.HubConnectionBuilder().withUrl("http://localhost/game").build();
+    this.state.hubConnection = new SignalR.HubConnectionBuilder().withUrl("https://localhost:44337/game").build();
     this.state.hubConnection.start().then(()=>console.info('Connection Started')).catch(error=>console.error(error));
   }
 
