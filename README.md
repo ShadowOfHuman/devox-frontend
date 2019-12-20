@@ -12,9 +12,9 @@ This repository provides only frontend. Backend available in [devox-backend](htt
 	2. Bot checks its move to prevent the player from winning.
 2. Game with real people in Internet
  	1. In-game currency.
-  2. Customization
+	2. Customization
 3. Registration
-  1. User can start the game only by logging in.
+	1. User can start the game only by logging in.
 	2. Account is tied to e-mail.
 
 ## Specification
