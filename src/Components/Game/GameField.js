@@ -2,8 +2,10 @@ import React from "react";
 import {User} from "../../Models/User";
 import {CircularProgress} from "@material-ui/core";
 import * as SignalR from "@microsoft/signalr";
+import {HubConnection} from "@microsoft/signalr";
 
 const styles = {
+
   game: {
     display: "flex",
     justifyContent: "center"
@@ -18,16 +20,32 @@ const styles = {
     display: "flex"
   },
   square: {
-    width: 100,
-    height: 100,
+    width: 50,
+    height: 50,
     backgroundColor: "transparent",
-    fontSize: 90,
+    fontSize: 45,
     textAlign: "center",
     verticalAlign: "middle",
     border: "2px solid #707070",
     lineHeight: "90px"
+  },
+  openDialog: {
+    width: "auto",
+    height: "auto",
+    padding: 10,
+    display: "flex",
+    flexDirection: "row",
+  },
+  infoGame: {
+    display: "flex",
+    flexDirection: "column"
+  },
+  waitingSection: {
+    display: "flex",
+    flexDirection: "column"
   }
 };
+
 class Square extends React.Component {
   constructor(props) {
     super(props);
@@ -80,12 +98,9 @@ class Square extends React.Component {
 
 class Board extends React.Component {
 
-
   constructor(props, context) {
     super(props, context);
     this.state={
-      waitingUser: true,
-      waitingUserMove: true,
       nextUserMove: User,
       game: this.props.game
 
@@ -106,8 +121,11 @@ class Board extends React.Component {
       }
       game.push(<div style={styles.row}>{row}</div>);
     }
-    return <div style={styles.table}>{game}</div>;
-  }
+    return <div style={styles.openDialog}>
+      <div style={styles.table}>{game}</div>
+    </div>;
+
+      }
 }
 
 export class GameField extends React.Component {
@@ -115,22 +133,50 @@ export class GameField extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state={
-      game: this.props.game
+      game: this.props.game,
+      waitingUser: true,
+      waitingUserMove: true,
+      hubConnection: this.props.hubConnection
     };
     console.info(this.state.game);
   }
 
+  componentDidMount() {
+    this.setState({ hubConnection : () =>{
+      this.state.hubConnection.on('UserWasBeenConnection', (userId, userNameSecondUser) => {
+        let newGame = this.state.game;
+        console.info(userId);
+        newGame.secondUser = User(userId, userNameSecondUser);
+        this.setState({
+          game: newGame,
+          waitingUser: false,
+        });
+      });
+    }});
+    this.state.hubConnection
+      .invoke('CreateGame', this.state.game.id)
+      .catch(err => console.error(err));
+  }
+
   render() {
     return (
-      <div className="game">
-        {!this.state.waitingUser && <div>`Connected with{"lol"}`</div>}
-        <div className="game-info">
-          Waiting second user: { this.state.waitingUser && <CircularProgress/>}
-            <ol>{/* TODO */}</ol>
+      <div style={styles.openDialog}>
+        {this.state.waitingUser && <div style={styles.waitingSection}>
+          <div>Waiting connection second user to {this.state.game.title}</div>
+          <CircularProgress/>
+        </div>}
+        {!this.state.waitingUser && <div>
+          <div style={styles.game}>
+            <Board game={this.state.game} hubConnection={this.props.hubConnection} />
+          </div>
+          <div style={styles.infoGame}>
+            <div className="game-info">
+              {this.state.waitingUser && <div>`Connected with {this.state.game.secondUser.username}`</div>}
+              <ol>{/* TODO */}</ol>
+            </div>
+          </div>
         </div>
-        <div style={styles.game}>
-          <Board game={this.state.game} hubConnection={this.props.hubConnection} />
-        </div>
+        }
       </div>
     );
   }

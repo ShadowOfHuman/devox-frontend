@@ -57,9 +57,10 @@ export class GamesPageComponent extends React.Component {
       games: [],
       openGameDialog: false,
       context: props.context,
-      hubConnection: null
+      hubConnection: null,
+      isFirstUser: true
     };
-    this.state.hubConnection = new SignalR.HubConnectionBuilder().withUrl("https://localhost:44337/game").build();
+    this.state.hubConnection = new SignalR.HubConnectionBuilder().withUrl(process.env.REACT_APP_HUB_CONNECTION).build();
     this.state.hubConnection.start().then(()=>console.info('Connection Started')).catch(error=>console.error(error));
   }
 
@@ -113,7 +114,8 @@ export class GamesPageComponent extends React.Component {
   }
 
   handleCloseGameDialog = () => {
-    this.setState({openGameDialog: false});
+    this.setState({openGameDialog: false,
+    isFirstUser: true});
   };
 
   handleCloseConnectDialog=()=>{
@@ -136,6 +138,7 @@ export class GamesPageComponent extends React.Component {
       newGame.title = this.state.name;
 
       this.setState({
+        isFirstUser: false,
         openGameDialog: true,
         game: newGame
       });
@@ -235,9 +238,8 @@ export class GamesPageComponent extends React.Component {
             </TableBody>
           </Table>
         </div>
-
         <Dialog open={this.state.openGameDialog} onClose={this.handleCloseGameDialog} >
-          <GameField game = {this.state.game} hubConnection = {this.state.hubConnection}/>
+          <GameField game = {this.state.game} hubConnection = {this.state.hubConnection} isFirstUser={this.state.isFirstUser}/>
           {/*<GamesPreview*/}
           {/*  games={this.state.games}*/}
           {/*  clickHandler={this.onConnectClickHandler}*/}
