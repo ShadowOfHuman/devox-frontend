@@ -179,9 +179,6 @@ export default class AccessControl extends React.Component {
       .finally(() => {
         this.setState({loading: false});
       });
-
-
-    console.log(this.state.username + " " + this.state.email + " " + this.state.password)
   }
   handleChangeForm() {
     this.setState({singInForm: !this.state.singInForm});

@@ -60,8 +60,26 @@ export class GamesPageComponent extends React.Component {
       hubConnection: null,
       isFirstUser: true
     };
-    this.state.hubConnection = new SignalR.HubConnectionBuilder().withUrl(process.env.REACT_APP_HUB_CONNECTION).build();
+    this.state.hubConnection = new SignalR.HubConnectionBuilder().withUrl("http://localhost/game").build();
     this.state.hubConnection.start().then(()=>console.info('Connection Started')).catch(error=>console.error(error));
+    this.state.hubConnection.on('UserWasBeenConnection', (userId, userNameSecondUser) => {
+      let newGame = this.state.game;
+      console.info(userId);
+      let game = new Game();
+      let user = new User();
+      user.id = userId;
+      user.username = userNameSecondUser;
+      game.id = newGame.id;
+      game.firstUser = newGame.firstUser;
+      game.size = newGame.size;
+      game.title=newGame.title;
+      game.secondUser = user;
+      this.setState({
+        game: game,
+        waitingUser: false,
+        openGameDialog: true,
+      });
+    });
   }
 
   loadGames = () => {
@@ -122,7 +140,8 @@ export class GamesPageComponent extends React.Component {
 
   };
 
-  handleOpenConnectGameDialog = (gameId) =>{
+  handleOpenConnectGameDialog = (gameId, gameTitle, gameSize) =>{
+    this.setState({name: gameTitle, size: gameSize})
     let connectModel = {
       idGame: gameId,
       idUser: CookieService.getUserId()
@@ -133,7 +152,7 @@ export class GamesPageComponent extends React.Component {
       user.id = CookieService.getUserId();
       user.username = CookieService.getUsername();
       newGame.id = gameId;
-      newGame.firstUser = user;
+      newGame.secondUser = user;
       newGame.size = this.state.size;
       newGame.title = this.state.name;
 
@@ -159,12 +178,10 @@ export class GamesPageComponent extends React.Component {
         newGame.firstUser = user;
         newGame.size = this.state.size;
         newGame.title = this.state.name;
-
-
-        this.setState({
-          openGameDialog: true,
-          game: newGame
-        });
+        this.setState({game: newGame});
+        this.state.hubConnection
+            .invoke('CreateGame', this.state.game.id)
+            .catch(err => console.error(err));
       })
       .catch(error => {
         alert(error);
@@ -230,7 +247,7 @@ export class GamesPageComponent extends React.Component {
                   <TableCell >{row.title}</TableCell>
                   <TableCell >{row.size}</TableCell>
                   <TableCell >
-                    <button onClick={()=>this.handleOpenConnectGameDialog(row.id)}>Connect</button>
+                    <button onClick={()=>this.handleOpenConnectGameDialog(row.id, row.title, row.size)}>Connect</button>
                   </TableCell>
                 </TableRow>
               ))
@@ -239,7 +256,8 @@ export class GamesPageComponent extends React.Component {
           </Table>
         </div>
         <Dialog open={this.state.openGameDialog} onClose={this.handleCloseGameDialog} >
-          <GameField game = {this.state.game} hubConnection = {this.state.hubConnection} isFirstUser={this.state.isFirstUser}/>
+          <GameField game = {this.state.game} hubConnection = {this.state.hubConnection} isFirstUser={this.state.isFirstUser}
+          waitingUser = {this.state.waitingUser}/>
           {/*<GamesPreview*/}
           {/*  games={this.state.games}*/}
           {/*  clickHandler={this.onConnectClickHandler}*/}

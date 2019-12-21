@@ -134,7 +134,7 @@ export class GameField extends React.Component {
     super(props, context);
     this.state={
       game: this.props.game,
-      waitingUser: true,
+      waitingUser: this.props.waitingUser,
       waitingUserMove: true,
       hubConnection: this.props.hubConnection
     };
@@ -142,20 +142,6 @@ export class GameField extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ hubConnection : () =>{
-      this.state.hubConnection.on('UserWasBeenConnection', (userId, userNameSecondUser) => {
-        let newGame = this.state.game;
-        console.info(userId);
-        newGame.secondUser = User(userId, userNameSecondUser);
-        this.setState({
-          game: newGame,
-          waitingUser: false,
-        });
-      });
-    }});
-    this.state.hubConnection
-      .invoke('CreateGame', this.state.game.id)
-      .catch(err => console.error(err));
   }
 
   render() {
