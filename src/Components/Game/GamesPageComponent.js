@@ -141,27 +141,33 @@ export class GamesPageComponent extends React.Component {
   };
 
   handleOpenConnectGameDialog = (gameId, gameTitle, gameSize) =>{
-    this.setState({name: gameTitle, size: gameSize})
+    let newGame = new Game();
+    let user = new User();
+    user.id = CookieService.getUserId();
+    user.username = CookieService.getUsername();
+    newGame.id = gameId;
+    newGame.secondUser = user;
+    newGame.size = gameSize;
+    newGame.title = gameTitle;
+    this.setState({game: newGame});
     let connectModel = {
       idGame: gameId,
       idUser: CookieService.getUserId()
     };
-    this.state.hubConnection.invoke("ConnectToGame", connectModel).then(response => {
-      let newGame = new Game();
-      let user = new User();
-      user.id = CookieService.getUserId();
-      user.username = CookieService.getUsername();
-      newGame.id = gameId;
-      newGame.secondUser = user;
-      newGame.size = this.state.size;
-      newGame.title = this.state.name;
-
+    this.state.hubConnection.on("SecondUserConnected").then(response =>{
+      let game = new Game();
+      game.id = this.state.id;
+      game.secondUser = this.state.secondUser;
+      game.size = this.state.size;
+      game.title = this.state.title;
+      game.firstUser = response;
       this.setState({
+        game: game,
         isFirstUser: false,
-        openGameDialog: true,
-        game: newGame
+        openGameDialog: true
       });
     });
+    this.state.hubConnection.invoke("ConnectToGame", connectModel).then();
   };
 
   handleOpenGameDialog = () => {

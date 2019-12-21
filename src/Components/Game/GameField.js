@@ -27,7 +27,7 @@ const styles = {
     textAlign: "center",
     verticalAlign: "middle",
     border: "2px solid #707070",
-    lineHeight: "90px"
+    lineHeight: "40px"
   },
   openDialog: {
     width: "auto",
