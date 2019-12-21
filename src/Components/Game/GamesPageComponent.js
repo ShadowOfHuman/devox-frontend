@@ -62,6 +62,24 @@ export class GamesPageComponent extends React.Component {
     };
     this.state.hubConnection = new SignalR.HubConnectionBuilder().withUrl("http://localhost/game").build();
     this.state.hubConnection.start().then(()=>console.info('Connection Started')).catch(error=>console.error(error));
+    this.state.hubConnection.on("SecondUserConnected", (firstUserId, firstUserName) =>{
+      let user = new User();
+      user.id = firstUserId;
+      user.username = firstUserName;
+      let game = new Game();
+      game.firstUser = user;
+      game.id = this.state.id;
+      game.secondUser = this.state.secondUser;
+      game.size = this.state.size;
+      game.title = this.state.title;
+      console.info(user);
+      console.info(game);
+      this.setState({
+        game: game,
+        isFirstUser: false,
+        openGameDialog: true
+      });
+    });
     this.state.hubConnection.on('UserWasBeenConnection', (userId, userNameSecondUser) => {
       let newGame = this.state.game;
       console.info(userId);
@@ -154,19 +172,7 @@ export class GamesPageComponent extends React.Component {
       idGame: gameId,
       idUser: CookieService.getUserId()
     };
-    this.state.hubConnection.on("SecondUserConnected").then(response =>{
-      let game = new Game();
-      game.id = this.state.id;
-      game.secondUser = this.state.secondUser;
-      game.size = this.state.size;
-      game.title = this.state.title;
-      game.firstUser = response;
-      this.setState({
-        game: game,
-        isFirstUser: false,
-        openGameDialog: true
-      });
-    });
+
     this.state.hubConnection.invoke("ConnectToGame", connectModel).then();
   };
 
